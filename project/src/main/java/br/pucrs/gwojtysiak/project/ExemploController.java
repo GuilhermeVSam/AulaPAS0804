@@ -5,12 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Optional;
 
 
 
@@ -75,11 +77,23 @@ public class ExemploController {
     }
 
     @PostMapping("/novolivro")
-    public String createNewBook(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return entity;
+    public ResponseEntity<String> createNewBook(@RequestBody Livro livro) {
+        listaLivros.add(livro);
+
+        return ResponseEntity
+                .status(200)
+                .body("Livro Adicionado com Sucesso!");
     }
     
+    @GetMapping("/livrotitulo/{titulo}")
+    public ResponseEntity<Optional<Livro>> getMethodName(@PathVariable(value = "titulo") String titulo) {
+        Optional<Livro> foundLivro = listaLivros.stream()
+                            .filter(livro -> livro.getTitulo().equalsIgnoreCase(titulo))
+                            .findFirst();
+
+        return ResponseEntity
+                .status(200)
+                .body(foundLivro);
+    }
     
 }
